@@ -28,7 +28,7 @@ var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 var rest = require('restler');
  
-// Checks to see if the file infile exists. If so, the returns file name. If not, then error.
+
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
@@ -38,7 +38,7 @@ var assertFileExists = function(infile) {
     return instr;
 };
  
-// Checks to see if the given URL exists. If so, the returns URL in string. If not, then error.
+
 var assertURLExists = function(url) {
   var urlstr = url.toString();
   rest.get(urlstr).on('complete', function(result) {
@@ -92,27 +92,28 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <url_file>', 'Path to url of a file', clone(assertURLExists))
+    .option('-u,--url <url_file','Path to url of a file')
         .parse(process.argv);
  
-    // If file name was given, compare checks to file
+
     if(!program.url) {
       var checkJson = checkHtmlFile(program.file, program.checks);
       var outJson = JSON.stringify(checkJson, null, 4);
       console.log(outJson);
     }
  
-    // If URL was given, compare checks to URL
+
     else {
         // Compare checks to URL
         rest.get(program.url).on('complete', function(result) {
             // result is the info in URL
-            var checkJson = checkURL(result, program.checks);
+            var checkJson = checkURL(result,program.checks);
             var outJson = JSON.stringify(checkJson, null, 4);
  
             console.log(outJson);
         });
-    }
+}
+    
 }
  
 else {
